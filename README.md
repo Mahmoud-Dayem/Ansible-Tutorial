@@ -1,17 +1,17 @@
-# Ansible Tutorial
+# 🚀 Ansible Tutorial
 
-This guide will help you set up Ansible on a master machine and configure worker nodes for automation.
+> **This guide will help you set up Ansible on a master machine and configure worker nodes for automation.**
 
 ---
 
-## Prerequisites
+## 📝 Prerequisites
 
 - Replace usernames, passwords, and IP addresses as appropriate for your environment.
 - Ensure SSH access is set up between the master and worker nodes.
 
 ---
 
-## 1. Install Ansible on the Master Machine
+## 1️⃣ Install Ansible on the Master Machine
 
 ```bash
 sudo yum install ansible
@@ -19,7 +19,7 @@ sudo yum install ansible
 
 ---
 
-## 2. Install Python on Worker Machines
+## 2️⃣ Install Python on Worker Machines
 
 ```bash
 sudo yum install python3
@@ -27,39 +27,34 @@ sudo yum install python3
 
 ---
 
-## 3. Set Hostnames
+## 3️⃣ Set Hostnames
 
 On the **master machine**:
-
 ```bash
 sudo hostnamectl set-hostname master
 ```
 
 On **worker 1**:
-
 ```bash
 sudo hostnamectl set-hostname ansibleworker1
 ```
 
 On **worker 2**:
-
 ```bash
 sudo hostnamectl set-hostname ansibleworker2
 ```
 
 ---
 
-## 4. Update `/etc/hosts` on the Master
+## 4️⃣ Update `/etc/hosts` on the Master
 
 Edit the hosts file:
-
 ```bash
 sudo vim /etc/hosts
 ```
 
 Add the following lines (adjust IPs as needed):
-
-```
+```ini
 10.100.100.129 ansibleworker1
 10.100.100.130 ansibleworker2
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
@@ -70,17 +65,15 @@ Add the following lines (adjust IPs as needed):
 
 ---
 
-## 5. Configure Ansible
+## 5️⃣ Configure Ansible
 
 Edit the Ansible configuration file:
-
 ```bash
 sudo vim /etc/ansible/ansible.cfg
 ```
 
 Add or update the following sections:
-
-```
+```ini
 [defaults]
 inventory = /etc/ansible/hosts
 remote_user = ammar
@@ -98,27 +91,34 @@ become_ask_pass = False
 
 ---
 
-## 6. Define Inventory Hosts
+## 6️⃣ Define Inventory Hosts
 
 Edit the Ansible hosts file:
-
 ```bash
 sudo vim /etc/ansible/hosts
 ```
 
 Add the following lines:
-
-```
+```ini
 [dev]
-ansibleworker[1:2] ansible_become_pass=ahli
+ansibleworker1
+ansibleworker2
 ```
 
 ---
 
-## 7. Test the Configuration
+## 7️⃣ Add Password Variables
+
+On the master machine, create the file `/etc/ansible/group_vars/dev.yml` with:
+```yaml
+ansible_become_pass: yourpassword
+```
+
+---
+
+## 8️⃣ Test the Configuration
 
 On the master machine, run:
-
 ```bash
 ansible dev -m ping
 ```
@@ -127,5 +127,4 @@ You should see a successful ping response from your worker nodes.
 
 ---
 
-# Ansible-Tutorial
-# Ansible-Tutorial
+✨ **Happy Automating with Ansible!**
