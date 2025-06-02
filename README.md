@@ -121,7 +121,24 @@ ansible_become_pass: yourpassword
 On the master machine, run:
 ```bash
 ansible dev -m ping
+reply
+ansibleworker2 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+ansibleworker1 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+
 ```
+
 
 You should see a successful ping response from your worker nodes.
 
