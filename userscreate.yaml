@@ -1,0 +1,21 @@
+---
+- name: Create multiple users
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create users from user1 to user10
+      user:
+        name: "{{ item }}"
+        state: present
+        shell: /bin/bash
+      loop:
+        - user1
+        - user2
+        - user3
+        - user4
+        - user5
+        - user6
+        - user7
+        - user8
+        - user9
+        - user10

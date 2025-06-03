@@ -1,0 +1,11 @@
+- name: My first play
+  hosts: dev
+  vars_files:
+    - secrets.yaml
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+ 
+   - name: Print message
+     ansible.builtin.debug:
+       msg: "Hello, {{new_password}}!"

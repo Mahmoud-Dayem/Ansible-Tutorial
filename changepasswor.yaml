@@ -1,0 +1,9 @@
+---
+- name: Change user password
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update Basma's password
+      user:
+        name: basma
+        password: "{{ 'ahli' | password_hash('sha512') }}"

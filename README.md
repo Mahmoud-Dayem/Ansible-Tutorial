@@ -1,59 +1,62 @@
-# 🚀 Ansible Tutorial
+# 🚀 Ansible Tutorial Project
 
-> **This guide will help you set up Ansible on a master machine and configure worker nodes for automation.**
+Welcome! This repository demonstrates how to automate Linux administration tasks using [Ansible](https://www.ansible.com/).  
+You'll find playbooks for user management, password updates, file handling, and more.
+
+---
+
+## 📁 Project Structure
+
+```
+ansible-tutorial/
+├── Ansible-Tutorial/
+│   ├── ansible.cfg
+│   ├── hosts
+│   └── README.md
+├── changepasswor.yaml
+├── handler.yaml
+├── playbook.yaml
+├── secrets.yaml
+├── updatepassword.yaml
+├── usercreate.yaml
+├── userscreate.yaml
+```
 
 ---
 
 ## 📝 Prerequisites
 
-- Replace usernames, passwords, and IP addresses as appropriate for your environment.
-- Ensure SSH access is set up between the master and worker nodes.
+- **Ansible installed** on the control/master node.
+- **Python 3** installed on all managed nodes.
+- SSH access set up between master and worker nodes.
+- Inventory and configuration files set up (see below).
 
 ---
 
-## 1️⃣ Install Ansible on the Master Machine
+## ⚙️ Configuration
+
+### 1. Install Ansible
 
 ```bash
 sudo yum install ansible
 ```
 
----
-
-## 2️⃣ Install Python on Worker Machines
+### 2. Install Python on Worker Nodes
 
 ```bash
 sudo yum install python3
 ```
 
----
+### 3. Set Hostnames
 
-## 3️⃣ Set Hostnames
-
-On the **master machine**:
 ```bash
-sudo hostnamectl set-hostname master
+sudo hostnamectl set-hostname master         # On master
+sudo hostnamectl set-hostname ansibleworker1 # On worker 1
+sudo hostnamectl set-hostname ansibleworker2 # On worker 2
 ```
 
-On **worker 1**:
-```bash
-sudo hostnamectl set-hostname ansibleworker1
-```
+### 4. Update `/etc/hosts` on Master
 
-On **worker 2**:
-```bash
-sudo hostnamectl set-hostname ansibleworker2
-```
-
----
-
-## 4️⃣ Update `/etc/hosts` on the Master
-
-Edit the hosts file:
-```bash
-sudo vim /etc/hosts
-```
-
-Add the following lines (adjust IPs as needed):
 ```ini
 10.100.100.129 ansibleworker1
 10.100.100.130 ansibleworker2
@@ -63,16 +66,8 @@ Add the following lines (adjust IPs as needed):
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 ```
 
----
+### 5. Ansible Configuration (`ansible.cfg`)
 
-## 5️⃣ Configure Ansible
-
-Edit the Ansible configuration file:
-```bash
-sudo vim /etc/ansible/ansible.cfg
-```
-
-Add or update the following sections:
 ```ini
 [defaults]
 inventory = /etc/ansible/hosts
@@ -89,16 +84,8 @@ become_user = root
 become_ask_pass = False
 ```
 
----
+### 6. Inventory File (`hosts`)
 
-## 6️⃣ Define Inventory Hosts
-
-Edit the Ansible hosts file:
-```bash
-sudo vim /etc/ansible/hosts
-```
-
-Add the following lines:
 ```ini
 [dev]
 ansibleworker1
@@ -107,41 +94,238 @@ ansibleworker2
 
 ---
 
-## 7️⃣ Add Password Variables
+## 🔑 Password Management
 
-On the master machine, create the file `/etc/ansible/group_vars/dev.yml` with:
+- **Best Practice:** Store sensitive variables (like passwords) in an encrypted file using [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html).
+- Example:  
+  Encrypt your secrets file:
+  ```bash
+  ansible-vault create secrets.yaml
+  ```
+  Add:
+  ```yaml
+  new_password: your_secure_password
+  ```
+
+---
+
+## 📚 Playbooks Overview
+
+### 1. `usercreate.yaml` – Create a User and Grant Sudo
+
+Creates user `basma`, adds to group `dev`, and grants passwordless sudo.
+
 ```yaml
-ansible_become_pass: yourpassword
+- name: Create user Basma and set sudo permissions
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create the dev group (if it doesn't exist)
+      group:
+        name: dev
+        state: present
+
+    - name: Create user Basma and add to the dev group
+      user:
+        name: basma
+        groups: dev
+        append: yes
+        shell: /bin/bash
+
+    - name: Grant sudo privileges to Basma
+      copy:
+        content: "basma ALL=(ALL) NOPASSWD: ALL"
+        dest: /etc/sudoers.d/basma
+        mode: "0440"
 ```
 
 ---
 
-## 8️⃣ Test the Configuration
+### 2. `userscreate.yaml` – Create Multiple Users
 
-On the master machine, run:
+Creates users `user1` to `user10` with `/bin/bash` shell.
+
+```yaml
+- name: Create multiple users
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create users from user1 to user10
+      user:
+        name: "{{ item }}"
+        state: present
+        shell: /bin/bash
+      loop:
+        - user1
+        - user2
+        - user3
+        - user4
+        - user5
+        - user6
+        - user7
+        - user8
+        - user9
+        - user10
+```
+
+---
+
+### 3. `changepasswor.yaml` – Change a User's Password (Hardcoded)
+
+Changes `basma`'s password to `'ahli'` (hashed).
+
+```yaml
+- name: Change user password
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update Basma's password
+      user:
+        name: basma
+        password: "{{ 'ahli' | password_hash('sha512') }}"
+```
+
+---
+
+### 4. `updatepassword.yaml` – Change a User's Password (From Vault)
+
+Reads `new_password` from `secrets.yaml` (should be encrypted with Ansible Vault).
+
+```yaml
+- name: Change user password
+  hosts: all
+  become: yes
+  vars_files:
+    - secrets.yaml
+  tasks:
+    - name: Print message
+      ansible.builtin.debug:
+        msg: "Hello, {{ new_password }}!"
+    - name: Update Basma's password
+      user:
+        name: basma
+        password: "{{ new_password | password_hash('sha512') }}"
+```
+
+**Run with:**
 ```bash
-ansible dev -m ping
-reply
-ansibleworker2 | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-ansibleworker1 | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python3"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-
+ansible-playbook updatepassword.yaml --ask-vault-pass
 ```
-
-
-You should see a successful ping response from your worker nodes.
 
 ---
 
-✨ **Happy Automating with Ansible!**
+### 5. `playbook.yaml` – Basic Playbook Example
+
+Pings hosts and prints the `new_password` variable.
+
+```yaml
+- name: My first play
+  hosts: dev
+  vars_files:
+    - secrets.yaml
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+
+   - name: Print message
+     ansible.builtin.debug:
+       msg: "Hello, {{ new_password }}!"
+```
+
+---
+
+### 6. `handler.yaml` – Using Handlers
+
+Writes to `/etc/notes` and uses a handler to print its contents.
+
+```yaml
+- name: Write and read a file using handler
+  hosts: dev
+  become: yes
+  tasks:
+    - name: Write to /etc/notes
+      copy:
+        content: "iam Mahmoud abdedayem"
+        dest: /etc/notes
+        mode: "0644"
+      notify: Print file contents  # Triggers the handler
+
+  handlers:
+    - name: Print file contents
+      command: cat /etc/notes
+      register: file_content
+
+    # To show the file content, uncomment:
+    # - name: Show the file content
+    #   debug:
+    #     msg: "{{ file_content.stdout }}"
+```
+
+---
+
+## 🛠️ Useful Ansible Commands
+
+- **Check number of modules:**
+  ```bash
+  ansible-doc -l | wc -l
+  ```
+- **Check inventory graph:**
+  ```bash
+  ansible-inventory --graph
+  ```
+- **Run a shell command:**
+  ```bash
+  ansible dev -m shell -a "kill -9 1193"
+  ```
+- **Install a package:**
+  ```bash
+  ansible dev -m package -a "name=curl state=present"
+  ```
+- **Show help for a module:**
+  ```bash
+  ansible-doc package
+  ```
+- **Run a playbook:**
+  ```bash
+  ansible-playbook playbook.yaml
+  ```
+- **Check uptime:**
+  ```bash
+  ansible dev -m command -a "uptime -p"
+  ```
+- **Show system facts:**
+  ```bash
+  ansible all -m setup
+  ```
+- **Encrypt a file with Ansible Vault:**
+  ```bash
+  ansible-vault encrypt file.yaml
+  ```
+- **Run a playbook with vault password prompt:**
+  ```bash
+  ansible-playbook updatepassword.yaml --ask-vault-pass
+  ```
+
+---
+
+## 💡 Tips
+
+- **Never store plain-text passwords in your playbooks or inventory.** Use Ansible Vault for secrets.
+- **Group variables** can be stored in `group_vars/<group>.yml` for better organization.
+- **Handlers** are triggered by tasks and run at the end of a play unless notified otherwise.
+
+---
+
+## ✨ Happy Automating with Ansible!
+
+For more, see the [Ansible Documentation](https://docs.ansible.com/).
+
+
+
+
+
+
+
+
+
+
