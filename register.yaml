@@ -1,0 +1,14 @@
+- name: reg-vars
+  hosts: dev
+  gather_facts: false
+  tasks:
+    - name: get current date and time
+      user: 
+        name: Ali
+      register: user
+
+    - name: Print date and time
+      debug:
+        var: user
+ 
+  

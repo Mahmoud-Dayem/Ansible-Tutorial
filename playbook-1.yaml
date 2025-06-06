@@ -1,0 +1,13 @@
+- name: My first play
+
+  hosts: dev
+  gather_facts: false
+  # vars_files:
+  #   - secrets.yaml
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+ 
+  #  - name: Print message
+  #    ansible.builtin.debug:
+  #      msg: "Hello, {{new_password}}!"

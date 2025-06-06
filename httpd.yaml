@@ -1,0 +1,36 @@
+---
+- name: Install and configure Apache HTTPD
+  hosts: dev
+  become: yes
+  vars_files:
+    - ubuntu-family-vars.yaml  # Optional, if you have sensitive data to include
+  tasks:
+
+    - name: Install Apache2
+      apt:
+        name: "{{name}}"
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Apache service
+      service:
+        name: "{{name}}"
+        state: started
+        enabled: yes
+
+    - name: Allow HTTP traffic in UFW firewall
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+
+    - name: Create index.html with Eid message
+      copy:
+        content: "Eid Adh Mubarak 1446"
+        dest: /var/www/html/index.html
+        mode: "0644"
+
+    - name: Restart Apache to apply changes
+      service:
+        name: "{{name}}"
+        state: restarted        

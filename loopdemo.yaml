@@ -1,0 +1,13 @@
+---
+- name: loop demo
+  hosts: dev
+  gather_facts: false
+  tasks:
+    - name: loop through a list of items
+      debug:
+        msg: "{{ item }}"
+      loop:
+        - "password1"
+        - "password2"
+        - "password3"
+ 

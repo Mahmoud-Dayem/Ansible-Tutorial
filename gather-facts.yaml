@@ -1,0 +1,27 @@
+---
+- name: gather_facts
+  hosts: dev
+  gather_facts: yes
+
+  tasks:
+   - name: Ping my hosts
+     debug:
+       msg:  "{{ ansible_facts.ansible_device_links[0] }}"
+      
+ 
+# ---
+# - name: Gather IP addresses of hosts
+#   hosts: dev
+#   gather_facts: yes
+#   tasks:
+#     - name: Display host IP address
+#       debug:
+#         msg: "The IP address of {{ ansible_facts.date_time.date }} is {{ ansible_facts.default_ipv4.address }}" 
+# ---
+# - name: Gather IP addresses of hosts
+#   hosts: dev
+#   gather_facts: yes
+#   tasks:
+#     - name: Display host IP address
+#       debug:
+#         msg: "The IP address of {{ inventory_hostname }} is {{ ansible_facts.default_ipv4.address }}" 

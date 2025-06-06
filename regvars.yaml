@@ -1,0 +1,18 @@
+- name: reg-vars
+
+  hosts: dev
+  gather_facts: false
+  
+    # - secrets.yaml
+  # vars:
+  #   new_password: xxxxxxxxxxxx 
+  tasks:
+   - name: get current date and time
+     command: date
+     register: current_date
+     
+ 
+   - name: Print date and time
+     debug:
+       msg: "Current date and time is {{ current_date.stdout}}"
+   

@@ -321,7 +321,24 @@ Writes to `/etc/notes` and uses a handler to print its contents.
 For more, see the [Ansible Documentation](https://docs.ansible.com/).
 
 
+-ansible galaxy
+ansible-galaxy role init myrole
+apb runrole.yaml
+-usefull commands
+ansible-doc -l
 
+ansible-galaxy collection list
+ansible dev -m copy -a 'content="hello eyad mohamed mazen ammar " dest=/etc/mtd'
+ansible dev -m package -a "name=nmap state=latest"
+ansible dev -m service -a "name=httpd state=started enabled=yes"
+ansible-doc modulename
+ansible-navigator doc user
+ansible-vault create sensitive_data
+ansible-vault view sensitive_data
+ansible-vault edit sensitive_data
+ansible-vault decrypt sensitive_data
+ansible-vault rekey sensitive_data
+ansible-playbook playbookname.yaml --ask-vault-pass
 
 
 

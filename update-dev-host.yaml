@@ -1,0 +1,15 @@
+- name: update-dev-host
+
+  hosts: dev
+  gather_facts: false
+  
+    # - secrets.yaml
+  # vars:
+  #   new_password: xxxxxxxxxxxx 
+  tasks:
+   - name: update and upgrade packages
+     shell: apt-get update && apt-get upgrade -y
+   
+   
+ 
+   

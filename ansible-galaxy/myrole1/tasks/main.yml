@@ -1,0 +1,20 @@
+---
+# tasks file for myrole1
+
+  - name: Create the dev group (if it doesn't exist)
+    group:
+      name: dev
+      state: present
+
+  - name: Create user Basma and add to the dev group
+    user:
+      name: "{{username}}"
+      groups: dev
+      append: yes
+      shell: /bin/bash
+
+  - name: Grant sudo privileges to eyad
+    copy:
+      content: "basma ALL=(ALL) NOPASSWD: ALL"
+      dest: /etc/sudoers.d/eyad
+      mode: "0440"

@@ -1,0 +1,23 @@
+---
+users:
+  - name: user1
+    shell: /bin/bash
+  - name: user2
+    shell: /bin/bash
+  - name: user3
+    shell: /bin/bash
+  - name: user4
+    shell: /bin/bash
+  - name: user5
+    shell: /bin/bash
+  - name: user6
+    shell: /bin/bash
+  - name: user7
+    shell: /bin/bash
+  - name: user8
+    shell: /bin/bash
+  - name: user9
+    shell: /bin/bash
+  - name: user10
+    shell: /bin/bash
+
