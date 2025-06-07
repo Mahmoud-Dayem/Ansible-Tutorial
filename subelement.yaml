@@ -1,0 +1,34 @@
+---
+- name: configure server with application
+  hosts: dev
+  gather_facts: no
+  vars:
+    servers:
+      - name : webserver
+        applications:
+          - name: nginx
+            state: present
+          - name: php
+            state: present
+      - name: dbserver
+        applications:
+          - name: mysql
+            state: present
+          - name: redis
+            state: present        
+  tasks:
+    - name: webserver
+      debug: 
+        msg: "servers{{servers}}"
+    - name: install applications on each server
+      yum:
+        name: "{{item.1.name}}"    
+        state: "{{item.1.state}}"    
+      loop: "{{lookup('subelements', 'servers','applications')}}"  
+      tags: applications
+    - name:
+      debug:
+        msg: "{{item.1.name}}"
+      loop: "{{lookup('subelements', 'servers','applications')}}"
+      tags: applications
+        

@@ -1,0 +1,13 @@
+- name: tag demo
+  hosts: dev
+  gather_facts: false
+  tasks:
+    - name: debug show message
+      debug:
+        msg: "First"
+      tags: first  
+    - name: debug show message
+      debug:
+        msg: "second"
+      tags: second
+  

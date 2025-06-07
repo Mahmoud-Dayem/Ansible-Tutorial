@@ -6,4 +6,5 @@
     - name: Update Basma's password
       user:
         name: basma
-        password: "{{ 'ahli' | password_hash('sha512') }}"
+        password: "{{ 'basmapassword
+        ' | password_hash('sha512') }}"

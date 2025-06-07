@@ -1,0 +1,17 @@
+- name: filter demo
+  hosts: dev
+  gather_facts: false
+  vars:
+    my_var : 'basmapassword
+  tasks:
+    - name: debug show message
+      debug:
+        msg: "{{my_var | password_hash('sha256')}}"
+ 
+  
+  
+  #   - name: debug show message
+  #     debug:
+  #       msg: "{{number | upper}}"
+ 
+  

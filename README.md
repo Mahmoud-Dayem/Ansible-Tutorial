@@ -172,7 +172,7 @@ Creates users `user1` to `user10` with `/bin/bash` shell.
 
 ### 3. `changepasswor.yaml` – Change a User's Password (Hardcoded)
 
-Changes `basma`'s password to `'ahli'` (hashed).
+Changes `basma`'s password to `'password'` (hashed).
 
 ```yaml
 - name: Change user password
@@ -182,7 +182,7 @@ Changes `basma`'s password to `'ahli'` (hashed).
     - name: Update Basma's password
       user:
         name: basma
-        password: "{{ 'ahli' | password_hash('sha512') }}"
+        password: "{{ 'basmapassword' | password_hash('sha512') }}"
 ```
 
 ---

@@ -1,0 +1,12 @@
+- name: file plugin demo
+  hosts: dev
+  gather_facts: false
+  vars:
+    my_user1: "{{lookup('file', '/etc/passwd')  }}"
+    my_user2: "{{query('file', '/etc/passwd')  }}"
+ 
+  tasks:
+    - name: debug show message
+      debug:
+        msg: "{{my_user2}}"
+ 

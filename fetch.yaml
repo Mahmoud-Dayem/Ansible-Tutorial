@@ -1,0 +1,9 @@
+- name: Fetch /etc/hosts from dev group
+  hosts: dev
+  gather_facts: false
+  tasks:
+    - name: Retrieve /etc/hosts file
+      fetch:
+        src: /etc/hosts
+        dest: ./retrieved_hosts/
+        flat: yes

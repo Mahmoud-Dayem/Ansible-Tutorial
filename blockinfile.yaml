@@ -1,0 +1,12 @@
+- name: Add custom block to /etc/hosts
+  hosts: dev
+  gather_facts: false
+  tasks:
+    - name: Insert custom block into /etc/hosts
+      blockinfile:
+        path: /etc/hosts
+        block: |
+          # Custom Entries
+          192.168.1.100 myserver.local
+          192.168.1.101 mybackup.local
+        state: present
